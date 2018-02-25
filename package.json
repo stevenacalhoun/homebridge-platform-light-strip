@@ -20,6 +20,8 @@
   },
   "homepage": "https://github.com/stevenacalhoun/homebridge-platform-light-strip#readme",
   "dependencies": {
-    "onoff": "^1.2.0"
+    "onoff": "^1.2.0",
+    "raspi": "^5.0.2",
+    "raspi-i2c": "^6.1.0"
   }
 }
