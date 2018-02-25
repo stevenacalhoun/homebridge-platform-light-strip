@@ -1,0 +1,25 @@
+{
+  "name": "homebridge-platform-light-strip",
+  "version": "1.0.0",
+  "description": "Homebridge platform for light strips",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stevenacalhoun/homebridge-platform-light-strip.git"
+  },
+  "keywords": [
+    "homebridge-platform"
+  ],
+  "author": "Steven Calhoun",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stevenacalhoun/homebridge-platform-light-strip/issues"
+  },
+  "homepage": "https://github.com/stevenacalhoun/homebridge-platform-light-strip#readme",
+  "dependencies": {
+    "onoff": "^1.2.0"
+  }
+}
