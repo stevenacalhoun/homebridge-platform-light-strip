@@ -34,13 +34,28 @@ class TriLED {
 
   updateLED() {
     var dataStr = "";
-    dataStr += ("0" + this.r).slice(-3) + "-";
-    dataStr += ("0" + this.g).slice(-3) + "-";
-    dataStr += ("0" + this.b).slice(-3) + "-";
-    dataStr += ("0" + this.a).slice(-3) + "\0";
+    dataStr += this.padVal(this.r) + "-";
+    dataStr += this.padVal(this.g) + "-";
+    dataStr += this.padVal(this.b) + "-";
+    dataStr += this.padVal(this.a) + "\0";
 
     console.log(dataStr);
     this.i2c.writeString(dataStr);
+  }
+
+  padVal(val) {
+    var paddedVal = "";
+    if (val < 10) {
+      paddedVal = "00" + val;
+    }
+    else if (val < 100) {
+      paddedVal = "0" + val;
+    }
+    else {
+      paddedVal = "" + val
+    }
+
+    return paddedVal;
   }
 }
 

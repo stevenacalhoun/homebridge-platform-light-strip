@@ -2,7 +2,6 @@ var I2C = require('raspi-i2c').I2C;
 
 var i2c = new I2C();
 
-
 class I2CDevice {
   constructor(address) {
     this.address = address;
