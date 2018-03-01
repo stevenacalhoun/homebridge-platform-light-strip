@@ -10,8 +10,11 @@
     "type": "git",
     "url": "git+https://github.com/stevenacalhoun/homebridge-platform-light-strip.git"
   },
+  "engines": {
+    "homebridge": ">=0.4.38"
+  },
   "keywords": [
-    "homebridge-platform"
+    "homebridge-plugin"
   ],
   "author": "Steven Calhoun",
   "license": "ISC",
@@ -20,8 +23,9 @@
   },
   "homepage": "https://github.com/stevenacalhoun/homebridge-platform-light-strip#readme",
   "dependencies": {
+    "homebridge": "^0.4.38",
+    "minimist": "^1.2.0",
     "onoff": "^1.2.0",
-    "raspi": "^5.0.2",
     "raspi-i2c": "^6.1.0"
   }
 }
