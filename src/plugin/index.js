@@ -1,4 +1,4 @@
-var TriLED = require('./ledController');
+var TriLED = require('../led');
 
 var Service, Characteristic;
 

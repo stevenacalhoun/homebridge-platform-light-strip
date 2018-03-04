@@ -13,7 +13,7 @@ class I2CDevice {
   writeChar(char, cb) {
     var hexData = char.charCodeAt(0);
     i2c.writeByte(this.address, hexData, () => {
-      setTimeout(cb, 10);
+      setTimeout(cb, 20);
     });
   };
 
@@ -22,7 +22,7 @@ class I2CDevice {
     if (!this.writing) {
       const message = this.messages.shift();
       this.writing = true;
-      this.writeString(message);
+      this.writeString(message, cb);
     }
   }
 
@@ -30,19 +30,24 @@ class I2CDevice {
     this.writeChar(string.charAt(this.i), () => {
       this.i++;
       if (this.i < string.length) {
-        this.writeString(string);
+        this.writeString(string, cb);
       }
       else {
         this.i = 0;
         if (this.messages.length > 0) {
           const message = this.messages.shift();
-          this.writeString(message);
+          this.writeString(message, cb);
         }
         else {
           this.writing = false;
+          cb();
         }
       }
     });
+  }
+
+  readString(size, cb) {
+    i2c.read(this.address, this.address, size, cb);
   }
 }
 
