@@ -10,44 +10,51 @@ class I2CDevice {
     this.writing = false;
   }
 
-  writeChar(char, cb) {
+  writeChar(char) {
     var hexData = char.charCodeAt(0);
-    i2c.writeByte(this.address, hexData, () => {
-      setTimeout(cb, 20);
+
+    return new Promise((resolve, reject) => {
+      i2c.writeByte(this.address, hexData, () => {
+        setTimeout(resolve, 20);
+      });
     });
   };
 
-  sendMessage(string, cb) {
+  sendMessage(string) {
     this.messages.push(string);
     if (!this.writing) {
       const message = this.messages.shift();
       this.writing = true;
-      this.writeString(message, cb);
+      return this.writeString(message);
+    }
+    else {
+      return Promise.resolve();
     }
   }
 
-  writeString(string, cb) {
-    this.writeChar(string.charAt(this.i), () => {
+  writeString(string) {
+    return this.writeChar(string.charAt(this.i)).then(() => {
       this.i++;
       if (this.i < string.length) {
-        this.writeString(string, cb);
+        return this.writeString(string);
       }
       else {
         this.i = 0;
         if (this.messages.length > 0) {
           const message = this.messages.shift();
-          this.writeString(message, cb);
+          return this.writeString(message);
         }
         else {
           this.writing = false;
-          cb();
         }
       }
     });
   }
 
-  readString(size, cb) {
-    i2c.read(this.address, this.address, size, cb);
+  readString(size) {
+    return new Promise((resolve, reject) => {
+      i2c.read(this.address, this.address, size, resolve);
+    })
   }
 }
 

@@ -1,4 +1,5 @@
-var TriLED = require('./ledController');
+var I2CBus = require('./i2c/i2cBus');
+var I2CLED = require('./led/i2cLED');
 
 var Service, Characteristic;
 
@@ -9,31 +10,20 @@ module.exports = function(homebridge) {
 };
 
 function myLEDStrip(log, config) {
-  this.hue = 0;
-  this.saturation = 0;
-  this.value = 0;
-  this.on = true;
-
-  this.led = new TriLED(255, 255, 255);
-
-  //this.led.updateLEDHSV(
-  //  this.hue/365.0,
-  //  this.saturation/100.0,
-  //  this.value/100.0
-  //);
-
-  //this.led.hsv((hsv) => {
-  //  this.hue = hsv.h;
-  //  this.saturation = hsv.s;
-  //  this.value = hsv.v;
-  //});
-
   this.log = log;
   this.log("LED Strip init");
-  this.name = config['name'];
 
+  // i2c Bus
+  this.i2cBus = new I2CBus(0x08);
+
+  // LED
+  this.led = new I2CLED(this.i2cBus);
+
+  // Accessory info
+  this.name = config['name'];
   this.service = new Service.Lightbulb(this.name);
 
+  // Assign getters/setters for characteristics
   this.service
     .setCharacteristic(Characteristic.Manufacturer, "Steven")
     .setCharacteristic(Characteristic.Model, "M1")
@@ -60,79 +50,40 @@ function myLEDStrip(log, config) {
       .on('set', this.setSaturation.bind(this));
 }
 
-myLEDStrip.prototype.getOn = function(callback) {
-  callback(null, this.on);
+myLEDStrip.prototype.getOn = function(cb) {
+  cb(null, this.led.getOn());
 }
 
-myLEDStrip.prototype.setOn = function(on, callback) {
-  this.on = on;
-  if (on) {
-    this.log('Turning on');
-    this.led.turnOn(() => { console.log("Turning on") });
-  }
-  else {
-    this.log('Turning off');
-    this.led.turnOff(() => { console.log("Turning on") });
-  }
-
-  callback();
+myLEDStrip.prototype.setOn = function(on, cb) {
+  this.log('New On: ' + on);
+  this.led.setOn(on).then(cb);
 }
 
 myLEDStrip.prototype.getValue = function(cb) {
-  cb(null, this.value);
-  //this.led.hsv((hsv) => {
-  //  callback(null, hsv.v);
-  //});
+  cb(null, this.led.getValue());
 }
 
-myLEDStrip.prototype.setValue = function(value, callback) {
-  this.value = value;
-  this.log('New Value: ' + this.value);
-  this.led.updateLEDHSV(
-    this.hue/365.0,
-    this.saturation/100.0,
-    this.value/100.0,
-    () => { console.log("Updating"); }
-  );
-  callback();
+myLEDStrip.prototype.setValue = function(value, cb) {
+  this.log('New Value: ' + value);
+  this.led.setValue(value).then(cb);
 }
 
 myLEDStrip.prototype.getHue = function(cb) {
-  cb(null, this.hue);
-  //this.led.hsv((hsv) => {
-  //  callback(null, hsv.h);
-  //});
+  cb(null, this.led.getHue());
 }
 
-myLEDStrip.prototype.setHue = function(hue, callback) {
-  this.hue = hue;
-  this.log('New Hue: ' + this.hue);
-  //this.led.updateLEDHSV(
-  //  this.hue/365.0,
-  //  this.saturation/100.0,
-  //  this.value/100.0,
-  //  () => { console.log("Updating"); }
-  //);
-  callback();
+myLEDStrip.prototype.setHue = function(hue, cb) {
+  this.log('New Hue: ' + hue);
+  this.led.setHue(hue).then(cb);
 }
 
 myLEDStrip.prototype.getSaturation = function(cb) {
-  cb(null, this.saturation);
-  //this.led.hsv((hsv) => {
-  //  callback(null, hsv.s);
-  //});
+  cb(null, this.led.getSaturation());
 }
 
-myLEDStrip.prototype.setSaturation = function(saturation, callback) {
-  this.saturation = saturation;
-  this.log('New Saturation: ' + this.saturation);
-  this.led.updateLEDHSV(
-    this.hue/365.0,
-    this.saturation/100.0,
-    this.value/100.0,
-    () => { console.log("Updating"); }
-  );
-  callback();
+myLEDStrip.prototype.setSaturation = function(saturation, cb) {
+  this.log('New Saturation: ' + saturation);
+  this.led.setSaturation(saturation).then(cb);
 }
 
 myLEDStrip.prototype.getServices = function() {
